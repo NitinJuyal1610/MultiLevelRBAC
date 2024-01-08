@@ -19,9 +19,8 @@ export const getUserById = async (id: number) => {
 };
 
 export const userExists = async (
-  options: { email: string | null; mobile: string | null } = {
+  options: { email: string | null } = {
     email: null,
-    mobile: null,
   }
 ) => {
   if (!options.email) {
@@ -32,9 +31,6 @@ export const userExists = async (
   };
   if (options.email) {
     where[Op.or].push({ email: options.email });
-  }
-  if (options.mobile) {
-    where[Op.or].push({ email: options.mobile });
   }
 
   const users = await User.findAll({ where: where });

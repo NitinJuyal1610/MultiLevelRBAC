@@ -20,7 +20,6 @@ export const registerUser = async (
     let user = req.body;
     const userExist = await userExists({
       email: user.email,
-      mobile: user.mobile,
     });
     if (userExist) {
       throw new ApiError(400, "Email is alredy used");

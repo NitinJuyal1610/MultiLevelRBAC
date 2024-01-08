@@ -52,35 +52,6 @@ app.patch("/api/sync", async (req, res) => {
   }
 });
 
-/**
- * @swagger
- * tags:
- *   name: Global
- *
- */
-
-/**
- * @swagger
- * /:
- *   get:
- *     summary: Get server status
- *     description: Logged in users can fetch only their own user information.
- *     tags: [Global]
- *     responses:
- *       "200":
- *         description: OK
- *
- * /sync:
- *   patch:
- *     summary: Sync database
- *     description: To sync database first time and after change in model.
- *     tags: [Global]
- *     responses:
- *       "200":
- *         description: OK
- *
- */
-
 // middleware to handle error
 app.use(errorHandler);
 export default app;

@@ -1,6 +1,7 @@
 import { Sequelize } from "sequelize";
 import { dbConfig } from "../config/config";
 import logger from "../util/logger";
+import { createUser, userExists } from "../services/userService";
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -25,7 +26,20 @@ const dbSync = async () => {
   }
 };
 dbSync()
-  .then(res => {
+  .then(async res => {
+    const userExist = await userExists({
+      email: "admin@admin.com",
+    });
+
+    // if (!userExist) {
+    //   logger.info("Creating default admin user");
+    //   await createUser({
+    //     email: "admin@admin.com",
+    //     password: "admin@123",
+    //     name: "superAdmin",
+    //     role: "SUPERADMIN",
+    //   });
+    // }
     logger.info(`DB sync with status: ${res.success}`);
   })
   .catch(err => {

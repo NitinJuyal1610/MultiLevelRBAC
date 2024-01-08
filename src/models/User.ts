@@ -35,8 +35,9 @@ User.init(
       type: DataTypes.STRING,
     },
     role: {
-      type: DataTypes.INTEGER,
-      defaultValue: 2,
+      type: DataTypes.ENUM("SUPERADMIN", "BRANCHMANAGER", "SALESPERSON"),
+      allowNull: false,
+      defaultValue: "SALESPERSON",
     },
   },
   {
@@ -50,5 +51,13 @@ User.init(
 User.validPassword = (password: string, hash: string) => {
   return compareSync(password, hash);
 };
+
+// Relationship
+// user heirarchy
+User.hasMany(User, { as: "BranchManagers", foreignKey: "superAdminId" });
+User.belongsTo(User, { as: "SuperAdmin", foreignKey: "superAdminId" });
+
+User.hasMany(User, { as: "Salespersons", foreignKey: "branchManagerId" });
+User.belongsTo(User, { as: "BranchManager", foreignKey: "branchManagerId" });
 
 export default User;
