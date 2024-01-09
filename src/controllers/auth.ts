@@ -49,7 +49,7 @@ export const loginUser = async (
 
     const user = await findOneUser({ email });
     if (!user) {
-      throw new ApiError(400, "Email id is incorrect");
+      throw new ApiError(400, "Email id is incorrect, User Not found");
     }
 
     const validPassword = await validatePassword(user.email, password);

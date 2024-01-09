@@ -1,6 +1,5 @@
-import isAdmin from "./isAdmin";
 import deserializeUser from "./deserializeUser";
-import requireUser from "./requiresUser";
+import authorize from "./RBAC";
 import validateRequest from "./validateRequest";
 
-export { deserializeUser, requireUser, validateRequest, isAdmin };
+export { deserializeUser, authorize, validateRequest };

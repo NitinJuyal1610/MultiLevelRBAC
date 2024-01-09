@@ -1,13 +1,19 @@
 import { DataTypes, Model } from "sequelize";
 import { compareSync } from "../util/encrypt";
 import sequelizeConnection from "../db/connection";
+import { ROLES } from "../config/consts";
 
 class User extends Model {
   public id!: number;
   public name!: string;
   public email!: string;
   public password!: string;
+  public role!: ROLES;
 
+  // user heirarchy
+
+  public superAdminId!: number;
+  public branchManagerId!: number;
   // timestamps!
   public readonly created_at!: Date;
   public readonly last_updated!: Date;

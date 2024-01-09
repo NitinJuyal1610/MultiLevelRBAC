@@ -4,6 +4,7 @@ import { Op } from "sequelize";
 
 export const createUser = async (payload: any) => {
   payload.password = encryptSync(payload.password);
+  console.log(payload);
   const user = await User.create(payload);
   return user;
 };
@@ -74,26 +75,6 @@ export const findOneUser = async (options: any) => {
     attributes: { exclude: ["password"] },
   });
   return user;
-};
-
-export const updateUserById = (user: any, userId: number) => {
-  if (!user && !userId) {
-    throw new Error("Please provide user data and/or user id to update");
-  }
-  if (userId && isNaN(userId)) {
-    throw new Error("Invalid user id");
-  }
-  if (user.id || userId) {
-    const id = user.id || userId;
-
-    if (user.password) {
-      user.password = encryptSync(user.password);
-    }
-
-    return User.update(user, {
-      where: { id: id },
-    });
-  }
 };
 
 export const deleteUserById = (userId: number) => {

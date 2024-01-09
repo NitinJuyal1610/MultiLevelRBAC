@@ -13,3 +13,12 @@ export type ControllerFunction = (
   res: Response,
   next: NextFunction
 ) => void;
+
+export type UserType = {
+  name: string;
+  email: string;
+  role: string;
+  password: string;
+  superAdminId?: number;
+  branchManagerId?: number;
+};

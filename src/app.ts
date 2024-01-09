@@ -1,11 +1,13 @@
 import express from "express";
 import logger from "morgan";
+
 import { dbSync } from "./db/connection";
 import cors from "cors";
 import { customRequest } from "./types/customDefinition";
 import { deserializeUser } from "./middleware";
 import appRouter from "./routes/v1";
 import { errorHandler } from "./middleware/error";
+import { createUser, userExists } from "./services/userService";
 
 // Create Express server
 const app = express();
@@ -54,4 +56,27 @@ app.patch("/api/sync", async (req, res) => {
 
 // middleware to handle error
 app.use(errorHandler);
+
+dbSync()
+  .then(async res => {
+    const userExist = await userExists({
+      email: "admin@admin.com",
+    });
+    if (!userExist) {
+      const user = await createUser({
+        name: "superAdmin",
+        email: "admin@admin.com",
+        password: "admin",
+        role: "SUPERADMIN",
+      });
+
+      console.info(`Admin user created: ${user.name}`);
+    }
+    console.info(`DB sync with status: ${res.success}`);
+  })
+  .catch(err => {
+    console.error("Failed to sync DB", err);
+  });
+
+export { dbSync };
 export default app;
