@@ -56,8 +56,13 @@ export const validatePassword = async (email: string, password: string) => {
 };
 
 export const findOneUser = async (options: any) => {
-  if (!options.email && !options.id) {
-    throw new Error("Please provide email or id ");
+  if (
+    !options.email &&
+    !options.id &&
+    !options.superAdminId &&
+    !options.branchManagerId
+  ) {
+    throw new Error("Please provide valid attributes ");
   }
   const where = {
     [Op.or]: [] as any,

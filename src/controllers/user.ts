@@ -1,4 +1,4 @@
-import { createUser } from "../services/userService";
+import { createUser, findOneUser } from "../services/userService";
 import { NextFunction, Response } from "express";
 import { customRequest } from "../types/customDefinition";
 import { ApiError } from "../util/ApiError";
@@ -63,8 +63,19 @@ export const getListHandler = async (
   next: NextFunction
 ) => {
   try {
+    const query: any = {};
+    // Roles
+    if (req.user.role == ROLES.SUPERADMIN) {
+      query["superAdminId"] = req.user.id;
+    }
+
+    if (req.user.role == ROLES.BRANCHMANAGER) {
+      query["branchManagerId"] = req.user.id;
+    }
+
+    const users = await findOneUser(query);
     return res.status(200).json({
-      data: [],
+      data: users,
       error: false,
     });
   } catch (err) {
