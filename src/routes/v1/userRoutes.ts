@@ -27,7 +27,7 @@ userRouter.get(
 );
 
 userRouter.delete(
-  "delete/:id",
+  "/delete/:id",
   authorize([ROLES.SUPERADMIN, ROLES.BRANCHMANAGER]),
   deleteUserHandler
 );

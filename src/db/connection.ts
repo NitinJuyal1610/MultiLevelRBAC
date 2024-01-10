@@ -18,7 +18,7 @@ const sequelizeConnection = new Sequelize(
 
 const dbSync = async () => {
   try {
-    await sequelizeConnection.sync({ alter: isDev, force: isDev });
+    await sequelizeConnection.sync({ alter: isDev });
     return { success: true };
   } catch (error) {
     throw error;

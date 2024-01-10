@@ -1,4 +1,11 @@
-import { createUser, findOneUser } from "../services/userService";
+import {
+  createUser,
+  deleteUserById,
+  findManyUser,
+  findOneUser,
+  getUserById,
+  userExists,
+} from "../services/userService";
 import { NextFunction, Response } from "express";
 import { customRequest } from "../types/customDefinition";
 import { ApiError } from "../util/ApiError";
@@ -27,7 +34,13 @@ export const createUserHandler = async (
     if (userRole === ROLES.SUPERADMIN) {
       payload["superAdminId"] = req.user.id;
 
-      if (role === ROLES.SALESPERSON && branchManagerId) {
+      if (role === ROLES.SALESPERSON) {
+        if (!branchManagerId) {
+          throw new ApiError(
+            400,
+            "Please provide branch manager id for sales person"
+          );
+        }
         payload["branchManagerId"] = branchManagerId;
       }
     }
@@ -40,6 +53,12 @@ export const createUserHandler = async (
       payload["superAdminId"] = req.user.superAdminId;
     }
 
+    // existence
+    const userExist = await userExists({ email });
+
+    if (userExist) {
+      throw new ApiError(400, "Email is alredy used");
+    }
     // create user
     const user = await createUser(payload);
 
@@ -47,7 +66,7 @@ export const createUserHandler = async (
       throw new ApiError(400, "Failed to create user");
     }
 
-    return res.status(200).json({
+    return res.status(201).json({
       user: user,
       msg: user ? "User Create successfully" : "failed to create a user",
       error: false,
@@ -68,14 +87,13 @@ export const getListHandler = async (
     if (req.user.role == ROLES.SUPERADMIN) {
       query["superAdminId"] = req.user.id;
     }
-
     if (req.user.role == ROLES.BRANCHMANAGER) {
       query["branchManagerId"] = req.user.id;
     }
 
-    const users = await findOneUser(query);
+    const users = await findManyUser(query);
     return res.status(200).json({
-      data: users,
+      data: users ? users : [],
       error: false,
     });
   } catch (err) {
@@ -89,8 +107,28 @@ export const deleteUserHandler = async (
   next: NextFunction
 ) => {
   try {
+    const { id } = req.params;
+    const user = await getUserById(Number(id));
+
+    if (!user) {
+      throw new ApiError(400, "User not found");
+    }
+    //authorization
+    if (req.user.role == ROLES.BRANCHMANAGER) {
+      if (
+        user.role !== ROLES.SALESPERSON ||
+        user.branchManagerId !== req.user.id
+      ) {
+        throw new ApiError(401, "Unauthorized!");
+      }
+    }
+
+    await deleteUserById(Number(id));
+    //
     return res.status(200).json({
-      data: [],
+      data: {
+        msg: "User deleted successfully",
+      },
       error: false,
     });
   } catch (err) {

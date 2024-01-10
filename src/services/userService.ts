@@ -62,23 +62,62 @@ export const findOneUser = async (options: any) => {
     !options.superAdminId &&
     !options.branchManagerId
   ) {
-    throw new Error("Please provide valid attributes ");
+    throw new Error("Please provide valid attributes");
   }
-  const where = {
-    [Op.or]: [] as any,
-  };
+
+  const where: any = {};
 
   if (options.email) {
-    where[Op.or].push({ email: options.email });
+    where["email"] = options.email;
   }
   if (options.id) {
-    where[Op.or].push({ id: options.id });
+    where["id"] = options.id;
+  }
+  if (options.superAdminId) {
+    where["superAdminId"] = options.superAdminId;
+  }
+  if (options.branchManagerId) {
+    where["branchManagerId"] = options.branchManagerId;
   }
 
   const user = await User.findOne({
     where,
     attributes: { exclude: ["password"] },
   });
+
+  return user;
+};
+
+export const findManyUser = async (options: any) => {
+  if (
+    !options.email &&
+    !options.id &&
+    !options.superAdminId &&
+    !options.branchManagerId
+  ) {
+    throw new Error("Please provide valid attributes");
+  }
+
+  const where: any = {};
+
+  if (options.email) {
+    where["email"] = options.email;
+  }
+  if (options.id) {
+    where["id"] = options.id;
+  }
+  if (options.superAdminId) {
+    where["superAdminId"] = options.superAdminId;
+  }
+  if (options.branchManagerId) {
+    where["branchManagerId"] = options.branchManagerId;
+  }
+
+  const user = await User.findAll({
+    where,
+    attributes: { exclude: ["password"] },
+  });
+
   return user;
 };
 

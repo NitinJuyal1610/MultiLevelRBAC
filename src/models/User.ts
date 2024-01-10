@@ -59,11 +59,19 @@ User.validPassword = (password: string, hash: string) => {
 };
 
 // Relationship
-// user heirarchy
-User.hasMany(User, { as: "BranchManagers", foreignKey: "superAdminId" });
+// user hierarchy
+User.hasMany(User, {
+  as: "BranchManagers",
+  foreignKey: "superAdminId",
+  onDelete: "SET NULL",
+});
 User.belongsTo(User, { as: "SuperAdmin", foreignKey: "superAdminId" });
 
-User.hasMany(User, { as: "Salespersons", foreignKey: "branchManagerId" });
+User.hasMany(User, {
+  as: "Salespersons",
+  foreignKey: "branchManagerId",
+  onDelete: "SET NULL",
+});
 User.belongsTo(User, { as: "BranchManager", foreignKey: "branchManagerId" });
 
 export default User;
